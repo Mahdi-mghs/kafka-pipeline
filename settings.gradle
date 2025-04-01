@@ -1,0 +1,4 @@
+rootProject.name = 'kafka-pipeline'
+include 'kafka-wikimedia'
+include 'kafka-opensearch'
+
