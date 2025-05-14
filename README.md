@@ -1,59 +1,78 @@
-# Kafka-pipeline
+<!--
+===========================
+  Wikimedia→Kafka→OpenSearch
+===========================
 
-This repository hosts the **Real-Time Analytics** module, a key component of a larger data ingestion and processing system. In this module, we leverage live streaming data from Wikimedia, process it using Kafka, and feed it to OpenSearch for real-time analytics. Note that this module is part of an evolving ecosystem—future releases will include additional consumers targeting different use cases.
+An end‑to‑end real‑time data‑streaming pipeline ingesting Wikimedia event streams into Apache Kafka and indexing into OpenSearch for live dashboards.
+-->
+# Wikimedia Kafka → OpenSearch Pipeline
 
-## Table of Contents
+This repository contains everything you need to ingest the Wikimedia recent‑changes feed into Kafka, then consume and index it into OpenSearch for real‑time analytics and dashboards.
 
-- [Overview](#overview)
-- [Architecture](#architecture)
-- [Prerequisites](#prerequisites)
+[data_flow](https://github.com/user-attachments/assets/960f51d5-e316-4ad6-adf6-2a08712b8898)
 
-## Overview
+## 📊 Dashboard Preview
 
-This module is dedicated solely to providing real-time analytical capabilities for data streamed from Wikimedia. Here’s a high-level overview:
+Below is a preview of the live OpenSearch dashboard visualizing edit activity, top pages, and user statistics in real time:
 
-- **Producer (Java):**  
-  A Java application collects streaming data from Wikimedia and pushes messages to a Kafka topic.
+![OpenSearch Dashboard Preview](https://github.com/user-attachments/assets/8a03a2c2-46a2-4eef-991c-b27ebc28d259)
 
-- **Message Queue (Kafka):**  
-  Acts as the intermediary, buffering and distributing messages reliably.
+---
 
-- **Consumer (OpenSearch):**  
-  This component pulls data from Kafka and indexes it into OpenSearch, where a real-time dashboard visualizes the analytic insights.
+## 🚀 Features
 
-- **Optimization (Kafka Connect Sink):**  
-  To improve data ingestion speed into OpenSearch, we have configured a Kafka Connect Sink. This significantly enhances the performance and responsiveness of the analytics dashboard.
+- **High‑throughput Kafka Producer**  
+  – Batching, linger, and Snappy compression to maximize throughput.  
+- **Flexible Consumption**  
+  – Java consumer or Kafka Connect sink to OpenSearch.  
+- **Dockerized**  
+  – `docker-compose.yml` for bringing up OpenSearch, Kafka Connect, and dependencies in one command.  
+- **KRaft‑mode Kafka**  
+  – Zero‑Zookeeper, KRaft single‑node cluster via `kafkaManage.sh`.  
+- **Auto topic creation**  
+  – Topics created with 3 partitions and 1 replica, named `wikimedia.percentage`.  
+- **Real‑time Analytics**  
+  – OpenSearch index templates & Kibana‑style dashboards out of the box.
 
-- **Integration & Deployment:**  
-  - The Consumer is orchestrated using Docker Compose to ensure ease of deployment.
-  - A Bash script is provided to run both Producer and Consumer together.
-  - A demo GIF of the OpenSearch dashboard is included to showcase the real-time analytics interface.
+---
 
-## Architecture
+## 🏗️ Architecture
 
-The overall flow for the Real-Time Analytics module is as follows:
+1. **Wikimedia Event Stream** (Producer)  
+   - Connects to [Wikimedia EventStreams API](https://wikitech.wikimedia.org/wiki/EventStreams).  
+   - Publishes JSON events to Kafka topic `wikimedia.percentage`.  
+2. **Apache Kafka** (Broker)  
+   - KRaft mode, 3 partitions × 1 replica.  
+3. **OpenSearch Sink** (Consumer)  
+   - Either via custom Java consumer or Confluent Kafka Connect OpenSearch sink.  
+   - Writes into index `wikimedia-changes-YYYY.MM.dd`.  
+4. **OpenSearch Dashboards**  
+   - Pre‑built visualizations and dashboards for real‑time monitoring.
 
-1. **Data Collection:**  
-   - The Java-based Producer connects to Wikimedia's open streaming API to fetch live data.
-   - This data is published to a Kafka topic.
+---
 
-2. **Message Distribution:**  
-   - Kafka ensures that messages are reliably queued and distributed to the subscribed consumers.
+## 🔧 Prerequisites
 
-3. **Data Processing & Analytics:**  
-   - The OpenSearch Consumer retrieves data from Kafka.
-   - With the use of Kafka Connect Sink, data ingestion into OpenSearch is optimized.
-   - The data is then indexed in OpenSearch for real-time analytics.
+- Java 17+ & Maven  
+- Docker & Docker Compose  
+- Bash (for `kafkaManage.sh`)  
 
-4. **Visualization:**  
-   - The OpenSearch dashboard (illustrated through an included GIF) allows users to visualize and analyze the data as it flows in.
+---
 
-## Prerequisites
+## 🛠️ Setup
 
-Ensure you have the following installed on your environment before proceeding:
+1. **Clone the repo**  
+   ```bash
+   git clone https://github.com/Mahdi-mghs/kafka-pipeline
+   cd kafka-pipeline
+   chmod +x kafkaManage.sh
+2. **Run kafka and consumer**
+   ```bash
+   ./kafkaManage.sh start
+   ```
+   this will:
+   - Launch a single‑node KRaft Kafka broker
+   - Start OpenSearch & OpenSearch Dashboards via Docker Compose
+   - Prompt to choose between Kafka Connect or Java consumer
 
-- **Java** (JDK 17 or later)
-- **Apache Kafka**
-- **Docker** and **Docker Compose**
-- **Bash** (for running the startup script)
-- Reliable network access to Wikimedia’s streaming API
+
