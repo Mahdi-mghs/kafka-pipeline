@@ -9,13 +9,13 @@ An end‑to‑end real‑time data‑streaming pipeline ingesting Wikimedia even
 
 This repository contains everything you need to ingest the Wikimedia recent‑changes feed into Kafka, then consume and index it into OpenSearch for real‑time analytics and dashboards.
 
-[data_flow](https://github.com/user-attachments/assets/960f51d5-e316-4ad6-adf6-2a08712b8898)
+[data_flow](docs/data_flow.png)
 
 ## 📊 Dashboard Preview
 
 Below is a preview of the live OpenSearch dashboard visualizing edit activity, top pages, and user statistics in real time:
 
-![OpenSearch Dashboard Preview](https://github.com/user-attachments/assets/8a03a2c2-46a2-4eef-991c-b27ebc28d259)
+![OpenSearch Dashboard Preview](docs/simpleRecord.mp4)
 
 ---
 
